@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackclub Ratings Extension</title>
+    <style>
+         :root {
+            --primary-color: #262427;
+            --secondary-color: #645e64;
+            --background-color: #f5f5f5;
+            --text-color: #252429;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            margin-bottom: 2rem;
+        }
+        
+        .browser-list {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .browser-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .browser-button:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .disabled {
+            background-color: #ddd;
+        }
+        
+        .disabled:hover {
+            background-color: #ddd;
+            cursor: not-allowed;
+            color: #fff;
+        }
+        
+        .browser-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .browser-list {
+                flex-direction: column;
+            }
+        }
+        
+        .tooltip {
+            display: none;
+            visibility: hidden;
+        }
+        
+        #edge-button {
+            position: relative;
+        }
+        
+        #edge-button:hover .tooltip {
+            display: block;
+            visibility: visible;
+            position: absolute;
+            width: 90px;
+            top: -3rem;
+            right: 2.5%;
+            border-radius: 4px;
+            background-color: #252429;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hackclub Ratings Extension</h1>
+        <p>Enhance your browsing experience with our Hackclub Ratings Extension. Click the buttons below to install for your preferred browser.</p>
+        <div class="browser-list">
+            <a href="https://chromewebstore.google.com/detail/bens-high-seas-extension/ackfgflibnddakgepdkeafbmlokjokeo?authuser=2&hl=en-GB" class="browser-button" id="chrome-button">
+                <img class="browser-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" /> Chrome
+            </a>
+            <a href="https://addons.mozilla.org/en-GB/firefox/addon/ben-s-high-seas-extension/" class="browser-button" id="firefox-button">
+                <img class="browser-icon" src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg" /> Firefox
+            </a>
+            <a class="browser-button disabled" id="edge-button">
+                <img class="browser-icon" src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" /> Edge
+                <span class="tooltip">Awaiting Review</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chromeSVG = 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg';
+            const firefoxSVG = 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg';
+            const edgeSVG = 'https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg';
+            const icons = [chromeSVG, firefoxSVG, edgeSVG, 'https://waka.hackclub.com/assets/images/favicon-32x32.png'];
+            const iconContainer = document.createElement('div');
+            iconContainer.style.position = 'fixed';
+            iconContainer.style.top = 0;
+            iconContainer.style.left = 0;
+            iconContainer.style.width = '100%';
+            iconContainer.style.height = '100%';
+            iconContainer.style.pointerEvents = 'none';
+            iconContainer.style.zIndex = -1;
+            document.body.appendChild(iconContainer);
+            for (let i = 0; i < 50; i++) {
+                const icon = document.createElement('img');
+                icon.src = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.position = 'absolute';
+                icon.style.width = '32px';
+                icon.style.height = '32px';
+                icon.style.animation = `bounce  ease-in-out ${Math.random() +0.3}s infinite alternate`;
+                icon.style.left = `${Math.random() * 100}vw`;
+                icon.style.top = `${Math.random() * 100}vh`;
+                iconContainer.appendChild(icon);
+            }
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes drift {
+                    0% { transform: translate(0, 0); }
+                    100% { transform: translate(-100vw, 100vh); }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10vh); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            const browserName = navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : navigator.userAgent.includes('Edg') ? 'Edge' : 'Unknown';
+            if (browserName === 'Chrome') {
+                document.getElementById('chrome-button').classList.add('shimmy');
+            } else if (browserName === 'Firefox') {
+                document.getElementById('firefox-button').classList.add('shimmy');
+            } else if (browserName === 'Edge') {
+                document.getElementById('edge-button').classList.add('shimmy');
+            }
+        });
+    </script>
+</body>
+
+</html>

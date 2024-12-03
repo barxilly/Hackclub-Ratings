@@ -8,6 +8,7 @@ window.addEventListener("load", function() {
             return;
         }
         const doubloons = []
+        const projects = []
         const times = []
         const gringles = document.querySelectorAll(".gringle");
         if (gringles.length > 0) {
@@ -31,8 +32,18 @@ window.addEventListener("load", function() {
             const containDiv = element.querySelector(".items-start .gap-2");
             const newSpan = document.createElement("span");
             newSpan.className = "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-gray-50 border-gray-500/10 gringle";
-            newSpan.innerHTML = "<span style='height:20;'>⁺∕₋</span><span class='inline-block py-1'>" + fraction + "/10</span>";
+            newSpan.innerHTML = `<img class="iconbadge" src="https://lh3.googleusercontent.com/RhhITLSfPbbqI4rbdtyhTWKsCglCYptrVeKBT0ONGrqUqawj5eMWen2-t-8w_WTSLcyl4kXXB1nUZOvzvNc0uR02Mg=s32" style="width:15px;"><span class='inline-block py-1'>` + fraction + `/10</span>`;
             containDiv.appendChild(newSpan);
+
+            const index = Array.prototype.indexOf.call(elements, element);
+            const name = element.querySelector(".text-xl.font-semibold").innerText;
+            projects.push({
+                title: name,
+                doubloons: doubsInt,
+                rating: fraction,
+                time: timeFloat
+            })
+            console.log(projects);
         });
         const head = document.querySelector(" div > div.mt-6 > div.w-full.relative > div");
         console.log(head);
@@ -53,7 +64,8 @@ window.addEventListener("load", function() {
         const h2 = head.querySelectorAll("div")[0];
         head.insertBefore(span, h2);
         browser.storage.local.set({
-            doubloonsPerHour: totalDoubsPerHour
+            doubloonsPerHour: totalDoubsPerHour,
+            projects: projects
         });
     }, 1300);
     setInterval(function() {
@@ -91,4 +103,65 @@ window.addEventListener("load", function() {
             });
         });
     }, 1300);
+
+    if (window.location.href.includes('shipyard')) {
+        console.log("Shipyard page detected.");
+        const button = document.createElement("button");
+        button.classList.add("shipyard-benjs-button");
+        button.onclick = function() {
+
+        }
+        button.innerHTML = `
+            <img class="boticon" src=\"https://www.svgrepo.com/show/310389/bot.svg\" style=\"width: 160%; height: 60%;\">
+            <img class="iconbadge" src="https://lh3.googleusercontent.com/RhhITLSfPbbqI4rbdtyhTWKsCglCYptrVeKBT0ONGrqUqawj5eMWen2-t-8w_WTSLcyl4kXXB1nUZOvzvNc0uR02Mg=s32" style="width: 25%; height: 25%; position: absolute; top: 2.7em; right: 1em; border-radius: 50%;">
+        `;
+        const spann = document.createElement("span")
+        spann.innerHTML = "Generate Ideas (unofficial)"
+        button.appendChild(spann);
+
+        document.body.appendChild(button);
+
+        const butstyle = document.createElement("style");
+        butstyle.innerHTML = `
+        .shipyard-benjs-button {
+            width: 5em;
+            height: 5em;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 3000;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+
+        }
+        
+        .shipyard-benjs-button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .shipyard-benjs-button span {
+            display: none;
+            position: absolute;
+            top: -5em;
+            right: 0;
+            background-color: #f0f0f0;
+            padding: 0.5em;
+            border-radius: 0.5em;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            font-size: 0.8em;
+        }
+
+        .shipyard-benjs-button:hover span {
+            display: block;
+        }
+        `
+        document.head.appendChild(butstyle);
+    }
 });

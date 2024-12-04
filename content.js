@@ -283,10 +283,19 @@ window.addEventListener("load", function() {
                     browser.storage.local.set({
                         key: key
                     });
+
+                    // Remove form
+                    setTimeout(() => {
+                        overlay.remove();
+                        form.remove();
+                        button.click();
+                    }, 500);
                 }
 
                 await typewriterType("Generate Ideas (GPT-4o)", 1, title)
-                if (!browser.storage.local.get("key")) {
+                const keytest = (await browser.storage.local.get("key")).key;
+                console.log(keytest);
+                if (!keytest || keytest.length < 9) {
                     await typewriterType("First things first, I'll need your GitHub API Key", 30, t1);
                     await typewriterType("You'll need GitHub Models Access too. (I'll save this key for later)", 30, s1);
                     keyin.style.display = "block";

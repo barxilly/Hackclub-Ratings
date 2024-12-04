@@ -1,8 +1,5 @@
-console.log("Content script loaded.");
 window.addEventListener("load", function() {
-    console.log("DOM loaded.");
     setInterval(function() {
-        console.log("Setting elements.");
         var elements = document.querySelectorAll("[id^='shipped-ship-']");
         if (elements.length === 0) {
             return;
@@ -11,14 +8,12 @@ window.addEventListener("load", function() {
         const projects = []
         const times = []
         const gringles = document.querySelectorAll(".gringle");
-        if (gringles.length > 0) {
+        if (gringles.length > 0 || elements.length === 0) {
             return;
         }
         elements.forEach(function(element) {
-            const time = element.querySelector(".bg-gray-50").querySelector("span").innerText.split(" hr")[0];
-            console.log(time);
-            const doubs = element.querySelector(".bg-green-50").querySelector("span").innerText.split(" Doubloon")[0];
-            console.log(doubs);
+            const time = element.querySelector("div > div.flex-grow > div > span:nth-child(1)").querySelector("span").innerText.split(" hr")[0];
+            const doubs = element.querySelector("div > div.flex-grow > div > span:nth-child(2)").querySelector("span").innerText.split(" Doubloon")[0];
             const timeFloat = parseFloat(time);
             times.push(timeFloat);
             const doubsInt = parseInt(doubs);
@@ -32,9 +27,8 @@ window.addEventListener("load", function() {
             const containDiv = element.querySelector(".items-start .gap-2");
             const newSpan = document.createElement("span");
             newSpan.className = "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-gray-50 border-gray-500/10 gringle";
-            newSpan.innerHTML = `<img class="iconbadge" src="https://lh3.googleusercontent.com/RhhITLSfPbbqI4rbdtyhTWKsCglCYptrVeKBT0ONGrqUqawj5eMWen2-t-8w_WTSLcyl4kXXB1nUZOvzvNc0uR02Mg=s32" style="width:15px;"><span class='inline-block py-1'>` + fraction + `/10</span>`;
+            newSpan.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px;"><span class='inline-block py-1'>` + fraction + `/10</span>`;
             containDiv.appendChild(newSpan);
-
             const index = Array.prototype.indexOf.call(elements, element);
             const name = element.querySelector(".text-xl.font-semibold").innerText;
             projects.push({
@@ -43,10 +37,8 @@ window.addEventListener("load", function() {
                 rating: fraction,
                 time: timeFloat
             })
-            console.log(projects);
         });
         const head = document.querySelector(" div > div.mt-6 > div.w-full.relative > div");
-        console.log(head);
         const totalDoubs = doubloons.reduce((a, b) => a + b, 0);
         const totalTime = times.reduce((a, b) => a + b, 0);
         const totalDoubsPerHour = totalDoubs / totalTime;
@@ -79,16 +71,13 @@ window.addEventListener("load", function() {
         }
         browser.storage.local.get("doubloonsPerHour").then((result) => {
             const doubloonsPerHour = result.doubloonsPerHour;
-            console.log(doubloonsPerHour);
             elements.forEach(function(element) {
                 const price = element.querySelector(".text-green-500.font-semibold.flex.items-center").innerText.split(" ")[0];
-                console.log(price);
                 const priceInt = parseInt(price);
                 const hours = priceInt / doubloonsPerHour;
                 const span = element.querySelector(".text-xs.text-gray-600");
-                span.innerHTML = "(" + hours.toFixed(2) + " hrs)";
+                span.innerHTML = `<div style="display:flex;flex-direction:row;"><img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:15px;height:15px;margin-right:2px;">(` + hours.toFixed(2) + ` hrs worth)</div>`;
                 const buttons = element.querySelectorAll("button:disabled");
-                console.log(buttons);
                 if (buttons.length === 0 || buttons[0].innerHTML.includes("soon")) {
                     return;
                 }
@@ -98,70 +87,362 @@ window.addEventListener("load", function() {
                     let diff = priceInt - curdubs;
                     let time = diff / doubloonsPerHour;
                     let button = buttons[i];
-                    button.innerHTML = "" + time.toFixed(0) + " hrs away";
+                    button.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">` + time.toFixed(0) + ` hrs away`;
                 }
             });
         });
     }, 1300);
+    setInterval(function() {
+        const buttont = document.querySelector(".shipyard-benjs-button");
+        if (window.location.href.includes('shipyard') && !buttont) {
+            const button = document.createElement("button");
+            button.classList.add("shipyard-benjs-button");
+            button.onclick = async function() {
+                function typewriterType(text, speed, element) {
+                    let i = 0;
+                    let interval = setInterval(() => {
+                        if (i === text.length) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        element.innerHTML += text[i];
+                        i++;
+                    }, speed);
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve();
+                        }, text.length * speed);
+                    });
+                }
 
-    if (window.location.href.includes('shipyard')) {
-        console.log("Shipyard page detected.");
-        const button = document.createElement("button");
-        button.classList.add("shipyard-benjs-button");
-        button.onclick = function() {
+                // Create overlay
+                const overlay = document.createElement("div");
+                overlay.style.position = "fixed";
+                overlay.style.top = "0";
+                overlay.style.left = "0";
+                overlay.style.width = "100%";
+                overlay.style.height = "100%";
+                overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+                overlay.style.zIndex = "3050";
+                document.body.appendChild(overlay);
 
+                // Create form box
+                const form = document.createElement("div")
+                form.style.position = "fixed";
+                form.style.top = "50%";
+                form.style.left = "50%";
+                form.style.transform = "translate(-50%, -50%)";
+                form.style.backgroundColor = "white";
+                form.style.padding = "2em";
+                form.style.borderRadius = "1em";
+                form.style.zIndex = "3100";
+                form.style.boxShadow = "0 0 15px rgba(0, 0, 0, 0.3)";
+                form.style.display = "flex";
+                form.style.width = "33em";
+                form.style.height = "30em";
+                form.style.overflow = "auto";
+                form.style.flexDirection = "column";
+                form.id = "shipyard-benjs-form";
+                document.body.appendChild(form);
+
+                // Create close button
+                const close = document.createElement("button");
+                close.innerHTML = "Close";
+                close.style.position = "absolute";
+                close.style.top = "1em";
+                close.style.right = "1em";
+                close.innerHTML = 'X'
+                close.style.backgroundColor = "white";
+                close.style.border = "none";
+                close.style.borderRadius = "50%";
+                close.style.width = "2em";
+                close.style.height = "2em";
+                close.style.cursor = "pointer";
+                close.onclick = function() {
+                    overlay.remove();
+                    form.remove();
+                }
+                form.appendChild(close);
+
+                const title = document.createElement("h1");
+                title.style.textAlign = "center";
+                title.style.width = "100%";
+                title.style.fontSize = "2em";
+                title.style.userSelect = "none";
+                form.appendChild(title);
+
+
+                const t1 = document.createElement("p");
+                t1.style.marginTop = "1em";
+                t1.style.marginBottom = "1em";
+                t1.style.userSelect = "none";
+                form.appendChild(t1);
+
+                const s1 = document.createElement("sup");
+                s1.style.fontSize = "0.8em";
+                s1.style.color = "gray";
+                s1.style.marginTop = "0.2em";
+                s1.style.userSelect = "none";
+                form.appendChild(s1);
+
+                const keyin = document.createElement("input");
+                keyin.style.width = "100%";
+                keyin.style.height = "2.5em";
+                keyin.style.marginTop = "1em";
+                keyin.style.marginBottom = "0.3em";
+                keyin.style.border = "1px solid black";
+                keyin.style.borderRadius = "0.5em";
+                keyin.style.padding = "0.5em";
+                keyin.style.display = "none";
+                keyin.type = "password";
+                form.appendChild(keyin);
+
+                const ketinerr = document.createElement("p");
+                ketinerr.style.color = "red";
+                ketinerr.style.display = "none";
+                ketinerr.style.marginTop = "0.3em";
+                ketinerr.style.marginBottom = "0.3em";
+                ketinerr.style.userSelect = "none";
+                form.appendChild(ketinerr);
+
+                const keybut = document.createElement("button");
+                keybut.classList.add("shipyard-benjs-keybut");
+                keybut.style.width = "100%";
+                keybut.style.height = "2.5em";
+                keybut.style.marginTop = "0.5em";
+                keybut.style.marginBottom = "1em";
+                keybut.style.border = "1px solid black";
+                keybut.style.borderRadius = "0.5em";
+                keybut.style.padding = "0.5em";
+                keybut.style.lineHeight = "1";
+                keybut.style.backgroundColor = "white";
+                keybut.style.cursor = "pointer";
+                keybut.style.display = "none";
+                keybut.innerHTML = "Submit";
+                form.appendChild(keybut);
+                keybut.onclick = async function() {
+                    keybut.innerHTML = `
+                        <img src="https://raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif" style="width: 1.5em; height: 1.5em; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    `
+                    keybut.disabled = true;
+                    keybut.style.justifyContent = "center";
+                    const key = keyin.value;
+                    // Check if key is valid
+                    const response = await fetch("https://api.github.com/user", {
+                        headers: {
+                            Authorization: `token ${key}`
+                        }
+                    });
+                    if (response.status !== 200) {
+                        ketinerr.innerHTML = "Invalid key";
+                        ketinerr.style.display = "block";
+                        keybut.innerHTML = "Submit";
+                        keybut.disabled = false;
+                        return;
+                    }
+
+                    // Check if user has models access
+                    const urlai = "https://models.inference.ai.azure.com/chat/completions";
+                    const modelName = "gpt-4o-mini";
+                    const responseai = await axios.post(
+                        urlai, {
+                            messages: [{
+                                    role: 'system',
+                                    content: 'Say hi',
+                                },
+                                {
+                                    role: 'user',
+                                    content: 'hi',
+                                },
+                            ],
+                            temperature: 0.5,
+                            max_tokens: 1024,
+                            top_p: 1,
+                            model: modelName,
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${key}`,
+                            }
+                        }
+                    );
+
+                    console.log(responseai);
+
+                    if (responseai.status !== 200) {
+                        ketinerr.innerHTML = "You don't have models access";
+                        ketinerr.style.display = "block";
+                        keybut.innerHTML = "Submit";
+                        keybut.disabled = false;
+                        return;
+                    }
+
+                    keybut.innerHTML = "Success!";
+
+                    // Save key
+                    browser.storage.local.set({
+                        key: key
+                    });
+                }
+
+                await typewriterType("Generate Ideas (GPT-4o)", 1, title)
+                if (!browser.storage.local.get("key")) {
+                    await typewriterType("First things first, I'll need your GitHub API Key", 30, t1);
+                    await typewriterType("You'll need GitHub Models Access too. (I'll save this key for later)", 30, s1);
+                    keyin.style.display = "block";
+                } else {
+                    await typewriterType("You're all set! Click the button to generate ideas", 30, t1);
+                    keybut.innerHTML = "Generate";
+                    keybut.onclick = async function() {
+                        keybut.style.position = "relative";
+                        keybut.innerHTML = `
+                        <img src="https://raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif" style="width: 1.5em; height: 1.5em; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    `
+                        keybut.disabled = true;
+                        keybut.style.justifyContent = "center";
+                        // Get the user's projects
+                        const projects = await browser.storage.local.get("projects");
+                        const system = `You are going to be given some projects, how many doubloons they earned, how well they rated, and how long they took to make.
+                        Generate new ideas based on what works well.
+                        
+                        Give your answer in the format:
+                        <idea name>: <description of idea>. Work on it for <hours>. I predict it will get a <num>/10 rating.
+
+                        Give around 10 ideas. Make sure they are new, and not just repeated from the list or updated versions of projects.
+                        `
+                        let prompt = ""
+                        for (let i = 0; i < projects.projects.length; i++) {
+                            const project = projects.projects[i];
+                            prompt += `Project ${i + 1}: ${project.title}\nDoubloons: ${project.doubloons}\nRating: ${project.rating}/10\nTime: ${project.time} hours\n\n`
+                        }
+                        const urlai = "https://models.inference.ai.azure.com/chat/completions";
+                        const modelName = "gpt-4o-mini";
+                        const key = (await browser.storage.local.get("key")).key;
+                        console.log(key);
+                        const responseai = await axios.post(
+                            urlai, {
+                                messages: [{
+                                        role: 'system',
+                                        content: system,
+                                    },
+                                    {
+                                        role: 'user',
+                                        content: prompt,
+                                    },
+                                ],
+                                temperature: 0.5,
+                                max_tokens: 1024,
+                                top_p: 1,
+                                model: modelName,
+                            }, {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${key}`,
+                                }
+                            }
+                        );
+                        console.log(responseai.data.choices[0]);
+                        keybut.display = "none";
+                        keybut.style.opacity = 0;
+                        t1.innerText = ""
+
+                        // Convert response to HTML, with breaks and bolded text
+                        const response = responseai.data.choices[0].message.content;
+                        let html = response.replace(/\n/g, "<br>");
+                        html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+                        t1.innerHTML = html;
+                    }
+                }
+                keybut.style.display = "block";
+
+            }
+            button.innerHTML = `
+                <img class="boticon" src=\"https://www.svgrepo.com/show/310389/bot.svg\" style=\"width: 160%; height: 60%;\">
+                <img class="iconbadge" src="https://lh3.googleusercontent.com/RhhITLSfPbbqI4rbdtyhTWKsCglCYptrVeKBT0ONGrqUqawj5eMWen2-t-8w_WTSLcyl4kXXB1nUZOvzvNc0uR02Mg=s32" style="width: 25%; height: 25%; position: absolute; top: 2.7em; right: 1em; border-radius: 50%;">
+            `;
+            const spann = document.createElement("span")
+            spann.innerHTML = "Generate Ideas (unofficial)"
+            button.appendChild(spann);
+            document.body.appendChild(button);
+            const butstyle = document.createElement("style");
+            butstyle.innerHTML = `
+                .shipyard-benjs-button {
+                    width: 5em;
+                    height: 5em;
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 3000;
+                    background-color: white;
+                    border: 1px solid black;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: all 0.2s ease-in-out;
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+                }
+                
+                .shipyard-benjs-button:hover {
+                    background-color: #f0f0f0;
+                    transform: translateY(-5px);
+                    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+                }
+                .shipyard-benjs-button span {
+                    display: none;
+                    position: absolute;
+                    top: -5em;
+                    right: 0;
+                    background-color: #f0f0f0;
+                    padding: 0.5em;
+                    border-radius: 0.5em;
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+                    z-index: 2000;
+                    font-size: 0.8em;
+                }
+                .shipyard-benjs-button:hover span {
+                    display: block;
+                }
+
+                .shipyard-benjs-keybut {
+                    transition: all 0.2s ease-in-out;
+                }
+
+                .shipyard-benjs-keybut:hover {
+                    background-color: #f0f0f0;
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                }
+
+                .shipyard-benjs-keybut:disabled {
+                    cursor: not-allowed;
+                    background-color: #eeeeee !important;
+                    box-shadow: 0;
+                }
+
+                .shipyard-benjs-keybut:disabled:hover {
+                    transform: none;
+                    box-shadow: 0;
+                }
+
+                /* Scrollbar */
+                #shipyard-benjs-form::-webkit-scrollbar {
+                    border-radius: 0.3em;
+                    width: 1em;
+                }
+
+                #shipyard-benjs-form::-webkit-scrollbar-thumb {
+                    background-color: #888;
+                    border-radius: 0.3em;
+                }
+
+                #shipyard-benjs-form::-webkit-scrollbar-thumb:hover {
+                    background-color: #555;
+                }
+            `
+            document.head.appendChild(butstyle);
+        } else if (!window.location.href.includes('shipyard')) {
+            if (buttont) {
+                buttont.remove();
+            }
         }
-        button.innerHTML = `
-            <img class="boticon" src=\"https://www.svgrepo.com/show/310389/bot.svg\" style=\"width: 160%; height: 60%;\">
-            <img class="iconbadge" src="https://lh3.googleusercontent.com/RhhITLSfPbbqI4rbdtyhTWKsCglCYptrVeKBT0ONGrqUqawj5eMWen2-t-8w_WTSLcyl4kXXB1nUZOvzvNc0uR02Mg=s32" style="width: 25%; height: 25%; position: absolute; top: 2.7em; right: 1em; border-radius: 50%;">
-        `;
-        const spann = document.createElement("span")
-        spann.innerHTML = "Generate Ideas (unofficial)"
-        button.appendChild(spann);
-
-        document.body.appendChild(button);
-
-        const butstyle = document.createElement("style");
-        butstyle.innerHTML = `
-        .shipyard-benjs-button {
-            width: 5em;
-            height: 5em;
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 3000;
-            background-color: white;
-            border: 1px solid black;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-
-        }
-        
-        .shipyard-benjs-button:hover {
-            background-color: #f0f0f0;
-            transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .shipyard-benjs-button span {
-            display: none;
-            position: absolute;
-            top: -5em;
-            right: 0;
-            background-color: #f0f0f0;
-            padding: 0.5em;
-            border-radius: 0.5em;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            z-index: 2000;
-            font-size: 0.8em;
-        }
-
-        .shipyard-benjs-button:hover span {
-            display: block;
-        }
-        `
-        document.head.appendChild(butstyle);
-    }
+    }, 100);
 });

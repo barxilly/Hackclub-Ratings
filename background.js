@@ -4,3 +4,7 @@ chrome.action.onClicked.addListener((tab) => {
         files: ["content.js"],
     });
 });
+
+chrome.runtime.connect().onDisconnect.addListener(() => {
+    console.log("Disconnected");
+});

@@ -14,6 +14,23 @@ window.addEventListener("load", function() {
         elements.forEach(function(element) {
             const time = element.querySelector("div > div.flex-grow > div > span:nth-child(1)").querySelector("span").innerText.split(" hr")[0];
             const doubs = element.querySelector("div > div.flex-grow > div > span:nth-child(2)").querySelector("span").innerText.split(" Doubloon")[0];
+            const name = element.querySelector(".text-xl.font-semibold").innerText;
+            console.log(time, doubs);
+            if (doubs.includes("Pending")) {
+                const potentialMax = (time * 25).toFixed(0);
+                console.log(element);
+                const staged = document.querySelectorAll("[id^='staged-ship-']");
+                let theone;
+                staged.forEach(function(stage) {
+                    if (stage.innerHTML.includes(name)) {
+                        theone = stage;
+                    }
+                })
+                const butty = theone.querySelector("#ship-ship");
+                butty.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">Max Reward: ${potentialMax} Doubloons`;
+                theone.innerHTML = theone.innerHTML.replace("Pending", time + " hrs");
+                return;
+            }
             const timeFloat = parseFloat(time);
             times.push(timeFloat);
             const doubsInt = parseInt(doubs);
@@ -26,11 +43,13 @@ window.addEventListener("load", function() {
             }
             const containDiv = element.querySelector(".items-start .gap-2");
             const newSpan = document.createElement("span");
-            newSpan.className = "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-gray-50 border-gray-500/10 gringle";
+            newSpan.className = "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-green-350 border-gray-500/10 gringle";
+            if (fraction < 4) newSpan.style.backgroundColor = "rgba(255, 50, 50, 0.5)";
+            if (fraction >= 4 && fraction < 7) newSpan.style.backgroundColor = "rgba(245, 235, 121, 0.5)";
+            if (fraction >= 7) newSpan.style.backgroundColor = "rgba(50, 255, 50, 0.5)";
             newSpan.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px;"><span class='inline-block py-1'>` + fraction + `/10</span>`;
             containDiv.appendChild(newSpan);
             const index = Array.prototype.indexOf.call(elements, element);
-            const name = element.querySelector(".text-xl.font-semibold").innerText;
             projects.push({
                 title: name,
                 doubloons: doubsInt,
@@ -59,8 +78,22 @@ window.addEventListener("load", function() {
             doubloonsPerHour: totalDoubsPerHour,
             projects: projects
         });
-    }, 1300);
+    }, 1500);
     setInterval(function() {
+        if (window.location.href.includes('wonderdome')) {
+            if (!document.querySelector(' div > div > header > div > span > span')) return;
+            if (document.querySelector(' div > div > header > div > span > span').innerHTML.includes("blessing")) {
+                browser.storage.local.set({
+                    blessing: true
+                });
+                console.log("blessing");
+            } else if (document.querySelector(' div > div > header > div > span > span').innerHTML.includes("curse")) {
+                browser.storage.local.set({
+                    curse: true
+                });
+                console.log("curse");
+            }
+        }
         var elements = document.querySelectorAll("[id^='item_']");
         if (elements.length === 0) {
             return;
@@ -75,7 +108,7 @@ window.addEventListener("load", function() {
                 const price = element.querySelector(".text-green-500.font-semibold.flex.items-center").innerText.split(" ")[0];
                 const priceInt = parseInt(price);
                 const hours = priceInt / doubloonsPerHour;
-                const span = element.querySelector(".text-xs.text-gray-600");
+                const span = element.querySelector(".text-xs.text-green-600");
                 span.innerHTML = `<div style="display:flex;flex-direction:row;"><img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:15px;height:15px;margin-right:2px;">(` + hours.toFixed(2) + ` hrs worth)</div>`;
                 const buttons = element.querySelectorAll("button:disabled");
                 if (buttons.length === 0 || buttons[0].innerHTML.includes("soon")) {
@@ -93,6 +126,12 @@ window.addEventListener("load", function() {
         });
     }, 1300);
     setInterval(function() {
+        const doubloonImages = document.querySelectorAll("img[alt='doubloons']");
+        for (let i = 0; i < doubloonImages.length; i++) {
+            const doubloonImage = doubloonImages[i];
+            doubloonImage.style.aspectRatio = "1/1 !important";
+            doubloonImage.style.height = "auto";
+        }
         const buttont = document.querySelector(".shipyard-benjs-button");
         if (window.location.href.includes('shipyard') && !buttont) {
             const button = document.createElement("button");
@@ -114,8 +153,6 @@ window.addEventListener("load", function() {
                         }, text.length * speed);
                     });
                 }
-
-                // Create overlay
                 const overlay = document.createElement("div");
                 overlay.style.position = "fixed";
                 overlay.style.top = "0";
@@ -125,8 +162,6 @@ window.addEventListener("load", function() {
                 overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
                 overlay.style.zIndex = "3050";
                 document.body.appendChild(overlay);
-
-                // Create form box
                 const form = document.createElement("div")
                 form.style.position = "fixed";
                 form.style.top = "50%";
@@ -144,8 +179,10 @@ window.addEventListener("load", function() {
                 form.style.flexDirection = "column";
                 form.id = "shipyard-benjs-form";
                 document.body.appendChild(form);
-
-                // Create close button
+                overlay.onclick = function() {
+                    overlay.remove();
+                    form.remove();
+                }
                 const close = document.createElement("button");
                 close.innerHTML = "Close";
                 close.style.position = "absolute";
@@ -163,28 +200,23 @@ window.addEventListener("load", function() {
                     form.remove();
                 }
                 form.appendChild(close);
-
                 const title = document.createElement("h1");
                 title.style.textAlign = "center";
                 title.style.width = "100%";
                 title.style.fontSize = "2em";
                 title.style.userSelect = "none";
                 form.appendChild(title);
-
-
                 const t1 = document.createElement("p");
                 t1.style.marginTop = "1em";
                 t1.style.marginBottom = "1em";
                 t1.style.userSelect = "none";
                 form.appendChild(t1);
-
                 const s1 = document.createElement("sup");
                 s1.style.fontSize = "0.8em";
                 s1.style.color = "gray";
                 s1.style.marginTop = "0.2em";
                 s1.style.userSelect = "none";
                 form.appendChild(s1);
-
                 const keyin = document.createElement("input");
                 keyin.style.width = "100%";
                 keyin.style.height = "2.5em";
@@ -196,7 +228,6 @@ window.addEventListener("load", function() {
                 keyin.style.display = "none";
                 keyin.type = "password";
                 form.appendChild(keyin);
-
                 const ketinerr = document.createElement("p");
                 ketinerr.style.color = "red";
                 ketinerr.style.display = "none";
@@ -204,7 +235,6 @@ window.addEventListener("load", function() {
                 ketinerr.style.marginBottom = "0.3em";
                 ketinerr.style.userSelect = "none";
                 form.appendChild(ketinerr);
-
                 const keybut = document.createElement("button");
                 keybut.classList.add("shipyard-benjs-keybut");
                 keybut.style.width = "100%";
@@ -227,7 +257,6 @@ window.addEventListener("load", function() {
                     keybut.disabled = true;
                     keybut.style.justifyContent = "center";
                     const key = keyin.value;
-                    // Check if key is valid
                     const response = await fetch("https://api.github.com/user", {
                         headers: {
                             Authorization: `token ${key}`
@@ -240,8 +269,6 @@ window.addEventListener("load", function() {
                         keybut.disabled = false;
                         return;
                     }
-
-                    // Check if user has models access
                     const urlai = "https://models.inference.ai.azure.com/chat/completions";
                     const modelName = "gpt-4o-mini";
                     const responseai = await axios.post(
@@ -266,9 +293,7 @@ window.addEventListener("load", function() {
                             }
                         }
                     );
-
                     console.log(responseai);
-
                     if (responseai.status !== 200) {
                         ketinerr.innerHTML = "You don't have models access";
                         ketinerr.style.display = "block";
@@ -276,22 +301,16 @@ window.addEventListener("load", function() {
                         keybut.disabled = false;
                         return;
                     }
-
                     keybut.innerHTML = "Success!";
-
-                    // Save key
                     browser.storage.local.set({
                         key: key
                     });
-
-                    // Remove form
                     setTimeout(() => {
                         overlay.remove();
                         form.remove();
                         button.click();
                     }, 500);
                 }
-
                 await typewriterType("Generate Ideas (GPT-4o)", 1, title)
                 const keytest = (await browser.storage.local.get("key")).key;
                 console.log(keytest);
@@ -309,14 +328,12 @@ window.addEventListener("load", function() {
                     `
                         keybut.disabled = true;
                         keybut.style.justifyContent = "center";
-                        // Get the user's projects
                         const projects = await browser.storage.local.get("projects");
                         const system = `You are going to be given some projects, how many doubloons they earned, how well they rated, and how long they took to make.
                         Generate new ideas based on what works well.
                         
                         Give your answer in the format:
                         <idea name>: <description of idea>. Work on it for <hours>. I predict it will get a <num>/10 rating.
-
                         Give around 10 ideas. Make sure they are new, and not just repeated from the list or updated versions of projects.
                         `
                         let prompt = ""
@@ -354,8 +371,6 @@ window.addEventListener("load", function() {
                         keybut.display = "none";
                         keybut.style.opacity = 0;
                         t1.innerText = ""
-
-                        // Convert response to HTML, with breaks and bolded text
                         const response = responseai.data.choices[0].message.content;
                         let html = response.replace(/\n/g, "<br>");
                         html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
@@ -363,7 +378,6 @@ window.addEventListener("load", function() {
                     }
                 }
                 keybut.style.display = "block";
-
             }
             button.innerHTML = `
                 <img class="boticon" src=\"https://www.svgrepo.com/show/310389/bot.svg\" style=\"width: 160%; height: 60%;\">
@@ -383,7 +397,7 @@ window.addEventListener("load", function() {
                     left: 20px;
                     z-index: 3000;
                     background-color: white;
-                    border: 1px solid black;
+                    border: 2px solid red;
                     border-radius: 50%;
                     cursor: pointer;
                     transition: all 0.2s ease-in-out;
@@ -395,6 +409,21 @@ window.addEventListener("load", function() {
                     transform: translateY(-5px);
                     box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
                 }
+                .shipyard-benjs-button * {
+                    transform: rotate(0deg);
+                    transition: all 0.2s ease-in-out;
+                }
+                .shipyard-benjs-button:hover *:not(span) {
+                    animation: spin 1s linear infinite;
+                }
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                } 
                 .shipyard-benjs-button span {
                     display: none;
                     position: absolute;
@@ -410,39 +439,32 @@ window.addEventListener("load", function() {
                 .shipyard-benjs-button:hover span {
                     display: block;
                 }
-
                 .shipyard-benjs-keybut {
                     transition: all 0.2s ease-in-out;
                 }
-
                 .shipyard-benjs-keybut:hover {
                     background-color: #f0f0f0;
                     transform: translateY(-2px);
                     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
                 }
-
                 .shipyard-benjs-keybut:disabled {
                     cursor: not-allowed;
                     background-color: #eeeeee !important;
                     box-shadow: 0;
                 }
-
                 .shipyard-benjs-keybut:disabled:hover {
                     transform: none;
                     box-shadow: 0;
                 }
-
                 /* Scrollbar */
                 #shipyard-benjs-form::-webkit-scrollbar {
                     border-radius: 0.3em;
                     width: 1em;
                 }
-
                 #shipyard-benjs-form::-webkit-scrollbar-thumb {
                     background-color: #888;
                     border-radius: 0.3em;
                 }
-
                 #shipyard-benjs-form::-webkit-scrollbar-thumb:hover {
                     background-color: #555;
                 }

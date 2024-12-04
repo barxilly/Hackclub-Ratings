@@ -121,7 +121,7 @@ window.addEventListener("load", function() {
             const doubs = element.querySelector("div > div.flex-grow > div > span:nth-child(2)").querySelector("span").innerText.split(" Doubloon")[0];
             const name = element.querySelector(".text-xl.font-semibold").innerText;
             console.log(time, doubs);
-            if (doubs.includes("Pending")) {
+            if (doubs.includes("Pending") || doubs.includes("other")) {
                 /*let potentialMax = (time * 25).toFixed(0);
                 console.log((await browser.storage.local.get("blessing")).blessing)
                 console.log((await browser.storage.local.get("curse")).curse)

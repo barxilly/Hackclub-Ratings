@@ -4,6 +4,7 @@
 In the Shipyard:
 - Average vote rating out of 10
 - Each project's vote rating out of 10
+- An AI that can generate new ideas
 
 In the Shop:
 - Estimated time to get an item from nothing

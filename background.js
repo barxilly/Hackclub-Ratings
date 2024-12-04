@@ -1,10 +1,10 @@
-chrome.action.onClicked.addListener((tab) => {
-    chrome.scripting.executeScript({
+browser.action.onClicked.addListener((tab) => {
+    browser.scripting.executeScript({
         target: { tabId: tab.id },
         files: ["content.js"],
     });
 });
 
-chrome.runtime.connect().onDisconnect.addListener(() => {
+browser.runtime.connect().onDisconnect.addListener(() => {
     console.log("Disconnected");
 });

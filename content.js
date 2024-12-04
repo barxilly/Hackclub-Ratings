@@ -11,13 +11,20 @@ window.addEventListener("load", function() {
         if (gringles.length > 0 || elements.length === 0) {
             return;
         }
-        elements.forEach(function(element) {
+        elements.forEach(async function(element) {
             const time = element.querySelector("div > div.flex-grow > div > span:nth-child(1)").querySelector("span").innerText.split(" hr")[0];
             const doubs = element.querySelector("div > div.flex-grow > div > span:nth-child(2)").querySelector("span").innerText.split(" Doubloon")[0];
             const name = element.querySelector(".text-xl.font-semibold").innerText;
             console.log(time, doubs);
             if (doubs.includes("Pending")) {
-                const potentialMax = (time * 25).toFixed(0);
+                /*let potentialMax = (time * 25).toFixed(0);
+                console.log((await browser.storage.local.get("blessing")).blessing)
+                console.log((await browser.storage.local.get("curse")).curse)
+                if ((await browser.storage.local.get("blessing")).blessing) {
+                    potentialMax *= 1.2
+                } else if ((await browser.storage.local.get("curse")).curse) {
+                    potentialMax *= 0.5
+                }
                 console.log(element);
                 const staged = document.querySelectorAll("[id^='staged-ship-']");
                 let theone;
@@ -28,7 +35,7 @@ window.addEventListener("load", function() {
                 })
                 const butty = theone.querySelector("#ship-ship");
                 butty.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">Max Reward: ${potentialMax} Doubloons`;
-                theone.innerHTML = theone.innerHTML.replace("Pending", time + " hrs");
+                theone.innerHTML = theone.innerHTML.replace("Pending", time + " hrs");*/
                 return;
             }
             const timeFloat = parseFloat(time);

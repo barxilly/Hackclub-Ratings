@@ -1,4 +1,109 @@
 window.addEventListener("load", function() {
+    async function starty() {
+        if ((await browser.storage.local.get("loaded")).loaded) {
+            console.log("Extension has been loaded before");
+        } else {
+            // Create overlay
+            const overlay = document.createElement("div");
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100%";
+            overlay.style.height = "100%";
+            overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            overlay.style.zIndex = "3050";
+            document.body.appendChild(overlay);
+            // Create "form"
+            const form = document.createElement("div")
+            form.style.position = "fixed";
+            form.style.top = "50%";
+            form.style.left = "50%";
+            form.style.transform = "translate(-50%, -50%)";
+            form.style.backgroundColor = "white";
+            form.style.padding = "2em";
+            form.style.borderRadius = "1em";
+            form.style.zIndex = "3100";
+            form.style.boxShadow = "0 0 15px rgba(0, 0, 0, 0.3)";
+            form.style.display = "flex";
+            form.style.width = "33em";
+            form.style.height = "30em";
+            form.style.overflow = "auto";
+            form.style.flexDirection = "column";
+            form.id = "shipyard-benjs-form";
+            document.body.appendChild(form);
+            overlay.onclick = function() {
+                    overlay.remove();
+                    form.remove();
+                }
+                // Close button
+            const close = document.createElement("button");
+            close.innerHTML = "X";
+            close.style.position = "absolute";
+            close.style.top = "1em";
+            close.style.right = "1em";
+            close.style.backgroundColor = "white";
+            close.style.border = "none";
+            close.style.borderRadius = "50%";
+            close.style.width = "2em";
+            close.style.height = "2em";
+            close.style.cursor = "pointer";
+            close.onclick = function() {
+                overlay.remove();
+                form.remove();
+            }
+            form.appendChild(close);
+            // Title
+            const title = document.createElement("h1");
+            title.style.textAlign = "center";
+            title.style.width = "100%";
+            title.style.fontSize = "2em";
+            title.style.userSelect = "none";
+            title.innerHTML = "Thanks for installing!";
+            form.appendChild(title);
+            // Text
+            const t1 = document.createElement("p");
+            t1.innerHTML = `Thanks for installing my extension! I hope you enjoy. There are a few features that I've included here.`
+            form.appendChild(t1);
+            const t2 = document.createElement("p");
+            t2.innerHTML = `On the Shipyard page:`
+            form.appendChild(t2);
+            const t3 = document.createElement("p");
+            t3.innerHTML = `&nbsp;&nbsp;- You can click the bot icon in the bottom left to generate ideas for projects.`
+            form.appendChild(t3);
+            const t4 = document.createElement("p");
+            t4.innerHTML = `&nbsp;&nbsp;- You can see your average ratings and doubloons per hour at the top of the page.`
+            form.appendChild(t4);
+            const t5 = document.createElement("p");
+            t5.innerHTML = `&nbsp;&nbsp;- You can see how each project was rated.`
+            form.appendChild(t5);
+            const t6 = document.createElement("p");
+            t6.innerHTML = `In the shop:`
+            form.appendChild(t6);
+            const t7 = document.createElement("p");
+            t7.innerHTML = `&nbsp;&nbsp;- You can see how many hours it will take to get a certain item.`
+            form.appendChild(t7);
+            const t8 = document.createElement("p");
+            t8.innerHTML = `&nbsp;&nbsp;- You can see how many hours away you are from getting a certain item.`
+            form.appendChild(t8);
+            const t9 = document.createElement("p");
+            t9.innerHTML = `I hope you enjoy the extension! Any issues or feedback, ping me @Barxilly on the Slack.`
+            form.appendChild(t9);
+
+            const ts = [t1, t2, t3, t4, t5, t6, t7, t8, t9];
+            ts.forEach(t => {
+                t.style.marginTop = "1em";
+                t.style.marginBottom = "0em";
+                t.style.userSelect = "none";
+            })
+
+            await browser.storage.local.set({
+                loaded: true
+            });
+        }
+    }
+
+    starty();
+
     setInterval(function() {
         var elements = document.querySelectorAll("[id^='shipped-ship-']");
         if (elements.length === 0) {
@@ -115,7 +220,7 @@ window.addEventListener("load", function() {
                 const price = element.querySelector(".text-green-500.font-semibold.flex.items-center").innerText.split(" ")[0];
                 const priceInt = parseInt(price);
                 const hours = priceInt / doubloonsPerHour;
-                const span = element.querySelector(".text-xs.text-green-600");
+                const span = element.querySelector(".text-xs.text-gray-600");
                 span.innerHTML = `<div style="display:flex;flex-direction:row;"><img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:15px;height:15px;margin-right:2px;">(` + hours.toFixed(2) + ` hrs worth)</div>`;
                 const buttons = element.querySelectorAll("button:disabled");
                 if (buttons.length === 0 || buttons[0].innerHTML.includes("soon")) {

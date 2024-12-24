@@ -92,8 +92,11 @@ window.addEventListener("load", function() {
             const t9 = document.createElement("p");
             t9.innerHTML = `I hope you enjoy the extension! Any issues or feedback, ping me @Barxilly on the Slack.`
             form.appendChild(t9);
+            const t10 = document.createElement("p");
+            t10.innerHTML = `If you need to disable/change some features, see the popup.`
+            form.appendChild(t10);
 
-            const ts = [t1, t2, t3, t4, t5, t6, t7, t8, t9];
+            const ts = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10];
             ts.forEach(t => {
                 t.style.marginTop = "1em";
                 t.style.marginBottom = "0em";

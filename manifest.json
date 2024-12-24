@@ -10,7 +10,8 @@
     ],
     "action": {
         "default_title": "High Seas Extension",
-        "default_icon": "icon.png"
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
     },
     "icons": {
         "128": "icon.png"
@@ -27,5 +28,9 @@
         "gecko": {
             "id": "highseasext@benjs.uk"
         }
+    },
+    "background": {
+        "scripts": ["popup.js", "bp.js", "jq.js"],
+        "persistent": false
     }
 }

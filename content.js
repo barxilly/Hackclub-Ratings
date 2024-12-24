@@ -1,8 +1,12 @@
 window.addEventListener("load", function() {
+    console.log("Extension loaded");
     async function starty() {
-        if ((await browser.storage.local.get("loaded")).loaded) {
+        if ((await browser.storage.local.get("loadeds")).loadeds) {
             console.log("Extension has been loaded before");
         } else {
+            // Set bot and item ratings to true
+            await browser.storage.local.set({ bot: true, showItemRatings: true, info: true, itemWorth: true, hoursAway: true });
+
             // Create overlay
             const overlay = document.createElement("div");
             overlay.style.position = "fixed";
@@ -97,14 +101,14 @@ window.addEventListener("load", function() {
             })
 
             await browser.storage.local.set({
-                loaded: true
+                loadeds: true
             });
         }
     }
 
     starty();
 
-    setInterval(function() {
+    setInterval(async function() {
         var elements = document.querySelectorAll("[id^='shipped-ship-']");
         if (elements.length === 0) {
             return;
@@ -150,9 +154,11 @@ window.addEventListener("load", function() {
             const doubsPerHour = doubsInt / timeFloat;
             const percentage = (doubsPerHour / 25) * 100;
             let fraction = Math.round(percentage / 10);
+            // Fraction is a score out of 10
             if (fraction > 10) {
                 fraction = 10;
             }
+
             const containDiv = element.querySelector(".items-start .gap-2");
             const newSpan = document.createElement("span");
             newSpan.className = "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-green-350 border-gray-500/10 gringle";
@@ -160,7 +166,13 @@ window.addEventListener("load", function() {
             if (fraction >= 4 && fraction < 7) newSpan.style.backgroundColor = "rgba(245, 235, 121, 0.5)";
             if (fraction >= 7) newSpan.style.backgroundColor = "rgba(50, 255, 50, 0.5)";
             newSpan.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px;"><span class='inline-block py-1'>` + fraction + `/10</span>`;
-            containDiv.appendChild(newSpan);
+            if (await browser.storage.local.get("showItemRatings") && (await browser.storage.local.get("showItemRatings")).showItemRatings) {
+                containDiv.appendChild(newSpan);
+            } else if (!(await browser.storage.local.get("showItemRatings"))) {
+                browser.storage.local.set({
+                    showItemRatings: true
+                });
+            }
             const index = Array.prototype.indexOf.call(elements, element);
             projects.push({
                 title: name,
@@ -183,9 +195,11 @@ window.addEventListener("load", function() {
         span.style.width = "100%";
         span.innerHTML = "<br>Average: " + totalDoubsPerHour.toFixed(2) + " Doubloons per hour<br>Average Rating: " + (totalDoubsPerHour / 25 * 10).toFixed(0) + "/10";
         if (document.body.innerHTML.includes("Average:")) return;
-        head.appendChild(span);
-        const h2 = head.querySelectorAll("div")[0];
-        head.insertBefore(span, h2);
+        if (await browser.storage.local.get("info") && (await browser.storage.local.get("info")).info) {
+            head.appendChild(span);
+            const h2 = head.querySelectorAll("div")[0];
+            head.insertBefore(span, h2);
+        }
         browser.storage.local.set({
             doubloonsPerHour: totalDoubsPerHour,
             projects: projects
@@ -216,12 +230,14 @@ window.addEventListener("load", function() {
         }
         browser.storage.local.get("doubloonsPerHour").then((result) => {
             const doubloonsPerHour = result.doubloonsPerHour;
-            elements.forEach(function(element) {
+            elements.forEach(async function(element) {
                 const price = element.querySelector(".text-green-500.font-semibold.flex.items-center").innerText.split(" ")[0];
                 const priceInt = parseInt(price);
                 const hours = priceInt / doubloonsPerHour;
                 const span = element.querySelector(".text-xs.text-gray-600");
-                span.innerHTML = `<div style="display:flex;flex-direction:row;"><img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:15px;height:15px;margin-right:2px;">(` + hours.toFixed(2) + ` hrs worth)</div>`;
+                if (await browser.storage.local.get("itemWorth") && (await browser.storage.local.get("itemWorth")).itemWorth) {
+                    span.innerHTML = `<div style="display:flex;flex-direction:row;"><img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:15px;height:15px;margin-right:2px;">(` + hours.toFixed(2) + ` hrs worth)</div>`;
+                }
                 const buttons = element.querySelectorAll("button:disabled");
                 if (buttons.length === 0 || buttons[0].innerHTML.includes("soon")) {
                     return;
@@ -232,12 +248,14 @@ window.addEventListener("load", function() {
                     let diff = priceInt - curdubs;
                     let time = diff / doubloonsPerHour;
                     let button = buttons[i];
-                    button.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">` + time.toFixed(0) + ` hrs away`;
+                    if (await browser.storage.local.get("hoursAway") && (await browser.storage.local.get("hoursAway")).hoursAway) {
+                        button.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">` + time.toFixed(0) + ` hrs away`;
+                    }
                 }
             });
         });
     }, 1300);
-    setInterval(function() {
+    setInterval(async function() {
         const doubloonImages = document.querySelectorAll("img[alt='doubloons']");
         for (let i = 0; i < doubloonImages.length; i++) {
             const doubloonImage = doubloonImages[i];
@@ -245,7 +263,12 @@ window.addEventListener("load", function() {
             doubloonImage.style.height = "auto";
         }
         const buttont = document.querySelector(".shipyard-benjs-button");
-        if (window.location.href.includes('shipyard') && !buttont) {
+        if (!(await browser.storage.local.get("bot"))) {
+            browser.storage.local.set({
+                bot: true
+            });
+        }
+        if (window.location.href.includes('shipyard') && !buttont && (await browser.storage.local.get("bot")).bot) {
             const button = document.createElement("button");
             button.classList.add("shipyard-benjs-button");
             button.onclick = async function() {

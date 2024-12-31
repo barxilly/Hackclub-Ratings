@@ -36,6 +36,16 @@
             visibility: hidden;
         }
         
+        input[type="text"] {
+            width: 70%;
+            border-radius: 4px;
+            background-color: #fff;
+            border: 1px solid #000;
+            padding: 0.3em;
+            margin-top: 0.2em !important;
+            margin-left: 2em !important
+        }
+        
         .checkbox {
             display: inline-block;
             width: 1em;
@@ -62,6 +72,14 @@
         
         input[type="checkbox"]:checked+.checkbox:after {
             opacity: 1;
+        }
+        
+        .mt-05 {
+            margin-top: 0.5em;
+        }
+        
+        .ml-2 {
+            margin-left: 2em;
         }
     </style>
     <meta http-equiv="Content-Security-Policy" content="
@@ -107,6 +125,22 @@
             <input type="checkbox" id="away" />
             <span class="checkbox" id="away-v"></span>
             <span id="away-s">Show Shop Item Hours Away</span>
+        </checkbox>
+        <checkbox>
+            <input type="checkbox" id="styl" />
+            <span class="checkbox" id="styl-v"></span>
+            <span id="styl-s">Show Style Changes</span>
+        </checkbox>
+        <checkbox>
+            <input type="checkbox" id="mini" />
+            <span class="checkbox" id="mini-v"></span>
+            <span id="mini-s">Minimalism</span>
+        </checkbox>
+        <checkbox class="mt-05">
+            <span class="ml-2">Custom Doubloon Icon</span>
+        </checkbox>
+        <checkbox>
+            <input type="text" id="icon" placeholder="URL" />
         </checkbox>
     </div>
     <script src="popup.js" type="module"></script>

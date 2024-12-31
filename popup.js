@@ -66,6 +66,32 @@ away.addEventListener("change", () => {
     });
 });
 
+const styl = document.getElementById("styl");
+const stylV = document.getElementById("styl-v");
+
+stylV.addEventListener("click", () => {
+    styl.click();
+});
+
+styl.addEventListener("change", () => {
+    browser.storage.local.set({
+        style: styl.checked
+    });
+});
+
+const mini = document.getElementById("mini");
+const miniV = document.getElementById("mini-v");
+
+miniV.addEventListener("click", () => {
+    mini.click();
+});
+
+mini.addEventListener("change", () => {
+    browser.storage.local.set({
+        minimalist: mini.checked
+    });
+});
+
 browser.storage.local.get("showItemRatings").then(({
     showItemRatings
 }) => {
@@ -96,6 +122,18 @@ browser.storage.local.get("hoursAway").then(({
     away.checked = hoursAway;
 });
 
+browser.storage.local.get("style").then(({
+    style
+}) => {
+    styl.checked = style;
+});
+
+browser.storage.local.get("minimalist").then(({
+    minimalist
+}) => {
+    mini.checked = minimalist;
+});
+
 document.getElementById("sir-s").onclick = () => {
     sirV.click();
 }
@@ -115,3 +153,26 @@ document.getElementById("iw-s").onclick = () => {
 document.getElementById("away-s").onclick = () => {
     awayV.click();
 }
+
+document.getElementById("styl-s").onclick = () => {
+    stylV.click();
+}
+
+document.getElementById("mini-s").onclick = () => {
+    miniV.click();
+}
+
+console.log(await browser.storage.local.get());
+
+const icon = document.getElementById("icon")
+icon.addEventListener("change", () => {
+    if (icon.value === "") return;
+    browser.storage.local.set({
+        doubIcon: icon.value
+    })
+});
+browser.storage.local.get("doubIcon").then(({
+    doubIcon
+}) => {
+    icon.value = doubIcon || '';
+});

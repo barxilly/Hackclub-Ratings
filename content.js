@@ -1,11 +1,12 @@
 window.addEventListener("load", function() {
+
     console.log("Extension loaded");
     async function starty() {
         if ((await browser.storage.local.get("loadeds")).loadeds) {
             console.log("Extension has been loaded before");
         } else {
             // Set bot and item ratings to true
-            await browser.storage.local.set({ bot: true, showItemRatings: true, info: true, itemWorth: true, hoursAway: true });
+            await browser.storage.local.set({ bot: true, showItemRatings: true, info: true, itemWorth: true, hoursAway: true, style: true, doubIcon: '', minimalist: false });
 
             // Create overlay
             const overlay = document.createElement("div");
@@ -111,7 +112,51 @@ window.addEventListener("load", function() {
 
     starty();
 
+    async function mini() {
+        console.log((await browser.storage.local.get("minimalist")).minimalist)
+        if ((await browser.storage.local.get("minimalist")).minimalist === true) {
+            const ministyle = document.createElement('style');
+            ministyle.innerHTML = `
+            div.inset-0 {
+                background-image: none !important;
+                background-color: #224;
+            }
+
+            body {
+                --font-main: 'Helvetica', 'Segoe UI', sans-serif !important;
+            }
+
+            * {
+                border-radius: 0 !important;
+            }
+
+            div.text-center.text-white > div.relative.w-full.px-6.py-4 > svg {
+                display:none;
+            }
+
+            div.text-center.text-white > div.relative.w-full.px-6.py-4 {
+                background-color: #335;
+            }
+
+            .enchanted {
+                font-family: var(--font-main) !important; 
+            }
+
+            div.absolute.flex.items-center.justify-between.top-0.left-0.right-0.h-14.px-2.m-0.sm\:m-2.bg-transparent.z-30.text-white > div:nth-child(1) > a > img {
+                display:none;
+            }
+        `
+            document.head.appendChild(ministyle);
+
+            document.querySelector('div.absolute.flex.items-center.justify-between.top-0.left-0.right-0.h-14.px-2.m-0.-2.bg-transparent.z-30.text-white > div:nth-child(1) > a').innerHTML = "High Seas"
+        }
+    }
+    mini()
+
+    // Shipyard
     setInterval(async function() {
+
+
         var elements = document.querySelectorAll("[id^='shipped-ship-']");
         if (elements.length === 0) {
             return;
@@ -207,8 +252,22 @@ window.addEventListener("load", function() {
             doubloonsPerHour: totalDoubsPerHour,
             projects: projects
         });
+        if ((await browser.storage.local.get("doubIcon")).doubIcon != "") {
+            if (!document.body.innerHTML.includes((await browser.storage.local.get("doubIcon")).doubIcon)) {
+                document.body.innerHTML = document.body.innerHTML.replace(/(\/_next\/static\/media\/doubloon\.[a-zA-Z0-9]{8}\.svg)|(doubloon\.svg)/g, (await browser.storage.local.get("doubIcon")).doubIcon);
+            }
+        }
+        Array.from(document.querySelectorAll('*')).find(el => el.innerHTML.trim() === 'Shop').onclick = function() {
+            window.location.href = "/shop";
+        }
+        Array.from(document.querySelectorAll('*')).find(el => el.innerHTML.trim() === 'Wonderdome').onclick = function() {
+            window.location.href = "/wonderdome";
+        }
     }, 1500);
+
+    // Wonderdome
     setInterval(function() {
+
         if (window.location.href.includes('wonderdome')) {
             if (!document.querySelector(' div > div > header > div > span > span')) return;
             if (document.querySelector(' div > div > header > div > span > span').innerHTML.includes("blessing")) {
@@ -258,6 +317,8 @@ window.addEventListener("load", function() {
             });
         });
     }, 1300);
+
+    // AI
     setInterval(async function() {
         const doubloonImages = document.querySelectorAll("img[alt='doubloons']");
         for (let i = 0; i < doubloonImages.length; i++) {
@@ -528,25 +589,27 @@ window.addEventListener("load", function() {
             const butstyle = document.createElement("style");
             butstyle.innerHTML = `
                 .shipyard-benjs-button {
+                    bottom: 20px;
+                    left: 20px;
+                    border: 2px solid red;
+                }
+
+                .shipyard-benjs-button, div.fixed.bottom-3.right-3.cursor-pointer {
                     width: 5em;
                     height: 5em;
                     position: fixed;
-                    bottom: 20px;
-                    left: 20px;
                     z-index: 3000;
                     background-color: white;
-                    border: 2px solid red;
                     border-radius: 50%;
                     cursor: pointer;
                     transition: all 0.2s ease-in-out;
-                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
                 }
                 
-                .shipyard-benjs-button:hover {
+                .shipyard-benjs-button:hover, div.fixed.bottom-3.right-3.cursor-pointer:hover {
                     background-color: #f0f0f0;
                     transform: translateY(-5px);
-                    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
                 }
+
                 .shipyard-benjs-button * {
                     transform: rotate(0deg);
                     transition: all 0.2s ease-in-out;
@@ -608,7 +671,52 @@ window.addEventListener("load", function() {
                 }
             `
             document.head.appendChild(butstyle);
-        } else if (!window.location.href.includes('shipyard')) {
+            const genistyle = document.createElement('style');
+            genistyle.innerHTML = `
+                div > div.mt-6 > button {
+                    background-color: #007bff;
+                    color: #fff;
+                    font-family:"__mainFont_274c52", "__mainFont_Fallback_274c52";
+                    font-size: 1.25rem !important;
+                }
+
+                div > div.mt-6 > button:hover {
+                    background-color: #0056b3;
+                    color: #fff;
+                    transition: all 0.3s ease-in-out;
+                    animation: gi 0.3s ease-in-out;
+                }
+
+                @keyframes gi {
+                    0% {
+                        transform: scale(1);
+                        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+                        border-color: #0056b3;
+                        background-color: #0056b3;
+                    }   
+
+                    100% {
+                        transform: scale(0.95);
+                        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+                        border-color: #0056b3;
+                        background-color: #0056b3;
+                        color: #fff;
+                    }  
+                }
+                    
+                [id^='shipped-ship-'] > div {
+                    transform: scale(0.97);
+                    transition: all 0.1s ease-in-out;
+                }
+
+                [id^='shipped-ship-'] > div:hover {
+                    transform: scale(1);
+                    box-shadow: 0 0 10px #fff;
+                }
+            `
+            if ((await browser.storage.local.get('style')).style) {
+                document.head.appendChild(genistyle);
+            }
             if (buttont) {
                 buttont.remove();
             }

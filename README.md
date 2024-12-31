@@ -10,3 +10,8 @@ In the Shipyard:
 In the Shop:
 - Estimated time to get an item from nothing
 - Estimated time to get an item you cann't currently get from your current doubloon count
+
+#### Other Features:
+- Style Changes
+- Minimalist Theme
+- Custom Doubloon Icons

@@ -113,6 +113,7 @@
 
 <body>
     <div class="container">
+        <video src="https://cloud-bh4egrf68-hack-club-bot.vercel.app/020241205-2036-34.3299409.mp4" autoplay controls muted preload="none" style="width: 80%; border-radius: 1em;"></video>
         <h1>Hackclub Ratings Extension</h1>
         <p>Enhance your browsing experience with our Hackclub Ratings Extension. Click the buttons below to install for your preferred browser.</p>
         <div class="browser-list">
@@ -122,9 +123,8 @@
             <a href="https://addons.mozilla.org/en-GB/firefox/addon/ben-s-high-seas-extension/" class="browser-button" id="firefox-button">
                 <img class="browser-icon" src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg" /> Firefox
             </a>
-            <a class="browser-button disabled" id="edge-button">
-                <img class="browser-icon" src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" /> Edge
-                <span class="tooltip">Awaiting Review</span>
+            <a href="https://addons.mozilla.org/firefox/downloads/file/4412510/ben_s_high_seas_extension-1.4.0.xpi" class="browser-button" id="xpi-button">
+                <img class="browser-icon" src="https://www.mozilla.org/media/protocol/img/logos/firefox/browser/developer/logo.41d42822c8fb.svg" /> .xpi
             </a>
         </div>
     </div>
@@ -133,8 +133,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const chromeSVG = 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg';
             const firefoxSVG = 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg';
-            const edgeSVG = 'https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg';
-            const icons = [chromeSVG, firefoxSVG, edgeSVG, 'https://waka.hackclub.com/assets/images/favicon-32x32.png'];
+            const xpiSVG = 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/developer/logo.41d42822c8fb.svg';
+            const icons = [chromeSVG, firefoxSVG, xpiSVG, 'https://waka.hackclub.com/assets/images/favicon-32x32.png'];
             const iconContainer = document.createElement('div');
             iconContainer.style.position = 'fixed';
             iconContainer.style.top = 0;

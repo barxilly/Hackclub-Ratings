@@ -126,6 +126,9 @@
             <a href="https://addons.mozilla.org/firefox/downloads/file/4412510/ben_s_high_seas_extension-1.4.0.xpi" class="browser-button" id="xpi-button">
                 <img class="browser-icon" src="https://www.mozilla.org/media/protocol/img/logos/firefox/browser/developer/logo.41d42822c8fb.svg" /> .xpi
             </a>
+            <a href="https://github.com/barxilly/Hackclub-Ratings/raw/46522777f8fc14c60045a4c6ec4e5d2e4c5b8650/bhs.zip" class="browser-button" id="zip-button">
+                <img class="browser-icon" src="https://img.icons8.com/?size=512&id=PLvn50bVGAlA&format=png" /> .zip
+            </a>
         </div>
     </div>
 
@@ -134,7 +137,8 @@
             const chromeSVG = 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg';
             const firefoxSVG = 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg';
             const xpiSVG = 'https://www.mozilla.org/media/protocol/img/logos/firefox/browser/developer/logo.41d42822c8fb.svg';
-            const icons = [chromeSVG, firefoxSVG, xpiSVG, 'https://waka.hackclub.com/assets/images/favicon-32x32.png'];
+            const zipSVG = 'https://img.icons8.com/?size=512&id=PLvn50bVGAlA&format=png';
+            const icons = [chromeSVG, firefoxSVG, xpiSVG, zipSVG, 'https://waka.hackclub.com/assets/images/favicon-32x32.png'];
             const iconContainer = document.createElement('div');
             iconContainer.style.position = 'fixed';
             iconContainer.style.top = 0;
@@ -144,7 +148,7 @@
             iconContainer.style.pointerEvents = 'none';
             iconContainer.style.zIndex = -1;
             document.body.appendChild(iconContainer);
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 500; i++) {
                 const icon = document.createElement('img');
                 icon.src = icons[Math.floor(Math.random() * icons.length)];
                 icon.style.position = 'absolute';

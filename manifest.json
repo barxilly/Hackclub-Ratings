@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ben's High Seas Extension",
   "extension_id": "highseasext@benjs.uk",
-  "version": "2.0",
+  "version": "2.0.1",
   "description": "Adds a rating system to the High Seas Shipyard and more!",
   "permissions": ["scripting", "activeTab", "storage"],
   "host_permissions": ["https://highseas.hackclub.com/*"],

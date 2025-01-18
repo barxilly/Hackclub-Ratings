@@ -204,24 +204,24 @@ setInterval(async function () {
     console.log(time, doubs);
     if (doubs.includes("Pending") || doubs.includes("other")) {
       /*let potentialMax = (time * 25).toFixed(0);
-                    console.log((await browser.storage.local.get("blessing")).blessing)
-                    console.log((await browser.storage.local.get("curse")).curse)
-                    if ((await browser.storage.local.get("blessing")).blessing) {
-                    potentialMax *= 1.2
-                    } else if ((await browser.storage.local.get("curse")).curse) {
-                    potentialMax *= 0.5
-                    }
-                    console.log(element);
-                    const staged = document.querySelectorAll("[id^='staged-ship-']");
-                    let theone;
-                    staged.forEach(function(stage) {
-                    if (stage.innerHTML.includes(name)) {
-                    theone = stage;
-                    }
-                    })
-                    const butty = theone.querySelector("#ship-ship");
-                    butty.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">Max Reward: ${potentialMax} Doubloons`;
-                    theone.innerHTML = theone.innerHTML.replace("Pending", time + " hrs");*/
+                                  console.log((await browser.storage.local.get("blessing")).blessing)
+                                  console.log((await browser.storage.local.get("curse")).curse)
+                                  if ((await browser.storage.local.get("blessing")).blessing) {
+                                  potentialMax *= 1.2
+                                  } else if ((await browser.storage.local.get("curse")).curse) {
+                                  potentialMax *= 0.5
+                                  }
+                                  console.log(element);
+                                  const staged = document.querySelectorAll("[id^='staged-ship-']");
+                                  let theone;
+                                  staged.forEach(function(stage) {
+                                  if (stage.innerHTML.includes(name)) {
+                                  theone = stage;
+                                  }
+                                  })
+                                  const butty = theone.querySelector("#ship-ship");
+                                  butty.innerHTML = `<img class="iconbadge" src="https://github.com/barxilly/Hackclub-Ratings/blob/main/site/hcrt.png?raw=true" style="width:20px; margin-right: 5px;">Max Reward: ${potentialMax} Doubloons`;
+                                  theone.innerHTML = theone.innerHTML.replace("Pending", time + " hrs");*/
       return;
     }
     const timeFloat = parseFloat(time);
@@ -237,6 +237,10 @@ setInterval(async function () {
     }
 
     const containDiv = element.querySelector(".items-start .gap-2");
+    const doubsPerSpan = document.createElement("span");
+    doubsPerSpan.className =
+      "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-gray-50 border-gray-500/10 gringle";
+    doubsPerSpan.innerHTML = `<img alt='doubloons' loading='lazy' width='16' height='20' decoding='async' data-nimg='1' src='/_next/static/media/doubloon.fd63888b.svg' style='color: transparent; height: auto;'><span class='inline-block py-1'>${doubsPerHour.toFixed(2)} / hr</span>`;
     const newSpan = document.createElement("span");
     newSpan.className =
       "inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-green-350 border-gray-500/10 gringle";
@@ -252,6 +256,7 @@ setInterval(async function () {
       (await browser.storage.local.get("showItemRatings")) &&
       (await browser.storage.local.get("showItemRatings")).showItemRatings
     ) {
+      containDiv.appendChild(doubsPerSpan);
       containDiv.appendChild(newSpan);
     } else if (!(await browser.storage.local.get("showItemRatings"))) {
       browser.storage.local.set({
@@ -265,6 +270,7 @@ setInterval(async function () {
       rating: fraction,
       time: timeFloat,
       image: element.querySelector(".rounded.w-full.absolute").src,
+      doubsPerHour: doubsPerHour,
     });
   });
   const head = document.querySelector(
@@ -281,12 +287,14 @@ setInterval(async function () {
     hours: 0,
   };
   const shopItems = await browser.storage.local.get("items");
-  if (shopItems && shopItems.items.length > 0) {
-    const items = shopItems.items;
-    const filteredItems = items.filter((item) => item.price <= totalDoubs);
-    mostExpensive = filteredItems.reduce((prev, current) =>
-      prev.price > current.price ? prev : current,
-    );
+  if (shopItems.items) {
+    if (shopItems.items.length > 0) {
+      const items = shopItems.items;
+      const filteredItems = items.filter((item) => item.price <= totalDoubs);
+      mostExpensive = filteredItems.reduce((prev, current) =>
+        prev.price > current.price ? prev : current,
+      );
+    }
   }
   const box = document.createElement("div");
   box.style.backgroundColor = "lightblue";
@@ -318,7 +326,7 @@ Total:<br>
     ` Hours</span>
 </span><br><br>
 ${
-  shopItems
+  shopItems.items
     ? `In total you could have bought a:<br>
 <div id='couldve' style="justify-content:center;margin-left:30%;padding-bottom:0 !important;transform:translateX(15%) scale(0.95);  width:30%;padding-left:30%; display:flex;flex-direction:column;align-items:center; padding: 1em; background-color: #ededed; border-radius: 10px; border: 2px #ccc solid; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
 <img src="${mostExpensive?.image}" style="width: 7em;height: 6em; border-radius: 10px;">
@@ -338,7 +346,7 @@ ${
 </span>
 </div>
 </div>`
-    : ""
+    : "(Head over to the shop to load more stats)"
 }<br>
 Average:<br>
 <span class='inline-flex items-center gap-1 rounded-full px-2 border text-sm leading-none text-gray-600 bg-gray-50 border-gray-500/10 false ' data-sentry-component='Pill' data-sentry-source-file='pill.tsx' style='vertical-align: middle;'>
@@ -382,7 +390,6 @@ Average:<br>
 
     // Add FA script to head
     const script = document.createElement("script");
-    script.src = "https://kit.fontawesome.com/7b3b1f0b5f.js";
     script.crossOrigin = "anonymous";
     document.head.appendChild(script);
 
@@ -548,9 +555,17 @@ Average:<br>
         sortProjects("time");
       };
 
+      const sortOption4 = document.createElement("div");
+      sortOption4.innerHTML = "Sort by Doubloons per Hour";
+      sortOption4.style.padding = "0.2em";
+      sortOption4.onclick = function () {
+        sortProjects("doubsPerHour");
+      };
+
       sortOptions.appendChild(sortOption1);
       sortOptions.appendChild(sortOption2);
       sortOptions.appendChild(sortOption3);
+      sortOptions.appendChild(sortOption4);
 
       this.parentElement.appendChild(sortOptions);
     }
@@ -768,10 +783,15 @@ setInterval(async function () {
       "Doubloons (" + timeUntil.toFixed(2) + " hours)",
     ),
   );
-  doubText.innerHTML = doubText.innerHTML.replace(
-    "doubloons",
-    "Doubloons (" + timeUntil.toFixed(2) + " hours)",
-  );
+  if (
+    !doubText.innerHTML
+      .replace("doubloons", "Doubloons (" + timeUntil.toFixed(2) + " hours)")
+      .includes("NaN")
+  )
+    doubText.innerHTML = doubText.innerHTML.replace(
+      "doubloons",
+      "Doubloons (" + timeUntil.toFixed(2) + " hours)",
+    );
   const buttont = document.querySelector(".shipyard-benjs-button");
   if (!(await browser.storage.local.get("bot"))) {
     browser.storage.local.set({

@@ -1,88 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
+  <head>
     <title>Extension Popup</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            width: 22em;
-            height: 22em;
-            background: url(https://highseas.hackclub.com/bg.svg) no-repeat fixed;
-            background-size: cover;
-            backdrop-filter: blur(10px);
-            color: #fff;
-            border: 1px solid #fff;
-            user-select: none;
-            padding: 0.5em;
-        }
-        
-        h1 {
-            width: 100%;
-            font-size: 18px;
-            text-align: center;
-        }
-        
-        .options {
-            margin: 0 auto;
-            width: 90%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        input[type="checkbox"] {
-            visibility: hidden;
-        }
-        
-        input[type="text"] {
-            width: 70%;
-            border-radius: 4px;
-            background-color: #fff;
-            border: 1px solid #000;
-            padding: 0.3em;
-            margin-top: 0.2em !important;
-            margin-left: 2em !important
-        }
-        
-        .checkbox {
-            display: inline-block;
-            width: 1em;
-            height: 1em;
-            background: #fff;
-            border-radius: 3px;
-            position: relative;
-            margin-right: 10px;
-        }
-        
-        .checkbox:after {
-            content: "";
-            display: block;
-            width: 0.5em;
-            height: 0.5em;
-            background: #000;
-            border-radius: 3px;
-            position: absolute;
-            top: 0.25em;
-            left: 0.25em;
-            opacity: 0;
-            transition: 0.2s;
-        }
-        
-        input[type="checkbox"]:checked+.checkbox:after {
-            opacity: 1;
-        }
-        
-        .mt-05 {
-            margin-top: 0.5em;
-        }
-        
-        .ml-2 {
-            margin-left: 2em;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        width: 25em;
+        height: 24em;
+        background: url(https://highseas.hackclub.com/bg.svg) no-repeat fixed;
+        background-size: cover;
+        backdrop-filter: blur(10px);
+        color: #fff;
+        user-select: none;
+        overflow: hidden;
+        padding: 0.5em;
+      }
+
+      h1 {
+        width: 100%;
+        font-size: 18px;
+        text-align: center;
+      }
+
+      .options {
+        margin: 0 auto;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      input[type="checkbox"] {
+        visibility: hidden;
+      }
+
+      input[type="text"] {
+        width: 70%;
+        border-radius: 4px;
+        background-color: #fff;
+        border: 1px solid #000;
+        padding: 0.3em;
+        margin-top: 0.2em !important;
+        margin-left: 2em !important;
+      }
+
+      .checkbox {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        background: #fff;
+        border-radius: 3px;
+        position: relative;
+        margin-right: 10px;
+      }
+
+      .checkbox:after {
+        content: "";
+        display: block;
+        width: 0.5em;
+        height: 0.5em;
+        background: #000;
+        border-radius: 3px;
+        position: absolute;
+        top: 0.25em;
+        left: 0.25em;
+        opacity: 0;
+        transition: 0.2s;
+      }
+
+      input[type="checkbox"]:checked + .checkbox:after {
+        opacity: 1;
+      }
+
+      .mt-05 {
+        margin-top: 0.5em;
+      }
+
+      .ml-2 {
+        margin-left: 2em;
+      }
     </style>
-    <meta http-equiv="Content-Security-Policy" content="
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
     default-src *;
     script-src *;
     style-src *;
@@ -94,56 +95,63 @@
     object-src *;
     worker-src *;
     base-uri *;
-    form-action *;">
+    form-action *;"
+    />
     <script src="jq.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Ben's High Seas Extension</h1>
     <div class="options">
-        <checkbox>
-            <input type="checkbox" id="sir" />
-            <span class="checkbox" id="sir-v"></span>
-            <span id="sir-s">Show Shipyard Ratings</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="bot" />
-            <span class="checkbox" id="bot-v"></span>
-            <span id="bot-s">Show AI Idea Generator</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="info" />
-            <span class="checkbox" id="info-v"></span>
-            <span id="info-s">Show Additional Info In Shipyard</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="iw" />
-            <span class="checkbox" id="iw-v"></span>
-            <span id="iw-s">Show Shop Item Hours Worth</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="away" />
-            <span class="checkbox" id="away-v"></span>
-            <span id="away-s">Show Shop Item Hours Away</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="styl" />
-            <span class="checkbox" id="styl-v"></span>
-            <span id="styl-s">Show Style Changes</span>
-        </checkbox>
-        <checkbox>
-            <input type="checkbox" id="mini" />
-            <span class="checkbox" id="mini-v"></span>
-            <span id="mini-s">Minimalism</span>
-        </checkbox>
-        <checkbox class="mt-05">
-            <span class="ml-2">Custom Doubloon Icon</span>
-        </checkbox>
-        <checkbox>
-            <input type="text" id="icon" placeholder="URL" />
-        </checkbox>
+      <checkbox>
+        <input type="checkbox" id="sir" />
+        <span class="checkbox" id="sir-v"></span>
+        <span id="sir-s">Show Shipyard Ratings</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="bot" />
+        <span class="checkbox" id="bot-v"></span>
+        <span id="bot-s">Show AI Idea Generator</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="info" />
+        <span class="checkbox" id="info-v"></span>
+        <span id="info-s">Show Additional Info In Shipyard</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="iw" />
+        <span class="checkbox" id="iw-v"></span>
+        <span id="iw-s">Show Shop Item Hours Worth</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="away" />
+        <span class="checkbox" id="away-v"></span>
+        <span id="away-s">Show Shop Item Hours Away</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="styl" />
+        <span class="checkbox" id="styl-v"></span>
+        <span id="styl-s">Show Style Changes</span>
+      </checkbox>
+      <checkbox>
+        <input type="checkbox" id="mini" />
+        <span class="checkbox" id="mini-v"></span>
+        <span id="mini-s">Minimalism</span>
+      </checkbox>
+      <checkbox class="mt-05">
+        <span class="ml-2">Custom Doubloon Icon</span>
+      </checkbox>
+      <checkbox>
+        <input type="text" id="icon" placeholder="URL" />
+      </checkbox>
+      <checkbox class="mt-05">
+        <span class="ml-2">Custom Font (TTF)</span>
+      </checkbox>
+      <checkbox>
+        <input type="text" id="font" placeholder="URL" />
+      </checkbox>
+      <div id="projects"></div>
     </div>
     <script src="popup.js" type="module"></script>
-</body>
-
+  </body>
 </html>
